@@ -4,9 +4,12 @@ import com.hospital.pojo.User;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import javax.inject.Named;
+
 /**
  * Created by 昊 on 2016/5/20.
  */
+@Named
 public class UserDAO extends BaseDAO<User, String> {
 
     public User findByName(String name){
