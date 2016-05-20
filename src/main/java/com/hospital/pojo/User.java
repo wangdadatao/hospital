@@ -9,6 +9,8 @@ public class User {
     private String tel;
     private String realname;
     private String role;
+    private String ip;
+    private String createtime;
 
     public Integer getId() {
         return id;
@@ -56,5 +58,21 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 }

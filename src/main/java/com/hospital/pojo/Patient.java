@@ -18,6 +18,7 @@ public class Patient implements Serializable {
     private String address;     //地址
     private String allergy;     //过敏史
     private String mark;        //备注
+    private String createtime;
 
     public Integer getId() {
         return id;
@@ -97,5 +98,13 @@ public class Patient implements Serializable {
 
     public void setMark(String mark) {
         this.mark = mark;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 }
