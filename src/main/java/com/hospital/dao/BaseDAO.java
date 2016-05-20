@@ -41,6 +41,9 @@ public abstract class BaseDAO<T,PK extends Serializable> {
         return (T) getSession().get(clazz,id);
     }
 
+
+
+
     public void del(PK id) {
         getSession().delete(findById(id));
     }
