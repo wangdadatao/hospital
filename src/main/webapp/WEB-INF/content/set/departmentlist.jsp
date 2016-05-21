@@ -23,7 +23,6 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12">
-
             <div class="box">
                 <div class="box-header">
                     <span class="title"><i class="fa fa-sitemap"></i> 科室列表</span>
@@ -46,8 +45,8 @@
                                 <th>${department.name}</th>
                                 <th>${department.admin}</th>
                                 <th>
-                                    <a id="a-editdepartment" index="${department.id}" href="javascript:;">修改</a>
-                                    <a id="a-deldepartment" href="javascript:;" index="${department.id}">删除</a>
+                                    <a class="a-deldepartment" index="${department.id}" href="javascript:;">删除</a>
+                                    <a class="a-editdepartment" index="${department.id}" href="javascript:;">修改</a>
                                 </th>
                             </tr>
                         </c:forEach>
@@ -55,14 +54,12 @@
                     </table>
                 </div>
             </div>
-
-
         </div>
-
     </div>
 </div>
 
-<div class="modal fade" id="newCustomer_Modal">
+<%--修改用户弹框--%>
+<div class="modal hide fade" id="newDepartment_Modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -78,7 +75,7 @@
                         <input id="input-name" type="text" class="form-control" name="department.name" placeholder="客户名称">
                     </div>
                     <div class="form-group">
-                        <label>联系人</label>
+                        <label>负责人</label>
                         <input id="input-admin" type="text" class="form-control" name="department.admin" placeholder="联系人姓名">
                     </div>
 
@@ -99,7 +96,15 @@
 <script>
     $(function () {
 
-        $("#a-editdepartment").click(function () {
+        $(".a-deldepartment").click(function () {
+            var id = $(this).attr("index");
+            if (confirm("确定要删除吗？")) {
+                window.location.href = "/set/departmentdel?id=" + id;
+            }
+        });
+
+
+        $(".a-editdepartment").click(function () {
             var id = $(this).attr("index");
             $.ajax({
                 url: "/set/departmentjson?id=" + id,
@@ -108,7 +113,8 @@
                     if (json.status == "error") {
                         alert("服务器异常,请稍后再试!");
                     } else {
-                        $("#newCustomer_Modal").modal("show");
+                        $("#newDepartment_Modal").modal("show");
+
                         $("#input-id").val(json.id);
                         $("#input-name").val(json.name);
                         $("#input-admin").val(json.admin);
@@ -119,37 +125,32 @@
                 }
             });
 
+//            表单验证
             $("#form-exitdepartment").validate({
-                errorElement:"span",
-                errorClass:"text-error",
-                rules:{
-                    "department.name":{
-                        required:true
+                errorElement: "span",
+                errorClass: "text-error",
+                rules: {
+                    "department.name": {
+                        required: true
                     },
-                    "department.admin":{
-                        required:true
+                    "department.admin": {
+                        required: true
                     }
                 },
-                messages:{
-                    "department.name":{
-                        required:"请输入科室名"
+                messages: {
+                    "department.name": {
+                        required: "请输入科室名"
                     },
-                    "department.admin":{
-                        required:"请输入负责人姓名"
+                    "department.admin": {
+                        required: "请输入负责人姓名"
                     }
                 }
-            })
+            });
 
             $("#btn-save-department").click(function () {
                 $("#form-exitdepartment").submit();
-            })
+            });
 
-            $("#a-deldepartment").click(function () {
-                var id = $(this).attr("index");
-                if(confirm("确定要删除吗？")){
-                    window.location.href = "/set/departmentdel?id=" + id;
-                }
-            })
 
         })
 

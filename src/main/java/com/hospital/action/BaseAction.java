@@ -11,13 +11,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
-public abstract class BaseAction extends ActionSupport {
+public abstract class BaseAction extends ActionSupport{
 
     public HttpServletRequest getHttpRequest() {
         return ServletActionContext.getRequest();
     }
 
-    public HttpServletResponse getHttpResponse(){
+    public HttpServletResponse getHttpResponse() {
         return ServletActionContext.getResponse();
     }
 

@@ -62,6 +62,7 @@ public class SetAllAction extends BaseAction {
     })
     public String departmentDel(){
         departmentService.delDepartment(id);
+        return SUCCESS;
     }
 
     //展示疾病列表
