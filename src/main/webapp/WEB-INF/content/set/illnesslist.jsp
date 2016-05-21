@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,8 +35,9 @@
                         <input type="text" placeholder="疾病名称">
                         <select id="ks">
                             <option value=""></option>
-                            <option value="">内科</option>
-                            <option value="">外科</option>
+                            <c:forEach items="${departmentList}" var="department">
+                                <option value="${department.id}">${department.name}</option>
+                            </c:forEach>
                         </select>
                         <button class="button button-pill button-flat-primary"><i class="fa fa-search"></i> 搜索</button>
                     </form>
@@ -62,38 +63,137 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th>流感</th>
-                            <th>内科</th>
-                            <th>
-                                <a href="">修改</a>
-                                <a href="#">删除</a>
-                            </th>
-                        </tr>
+                        <c:forEach items="${illnessList}" var="illness">
+                            <tr>
+                                <th>${illness.name}</th>
+                                <th>${illness.department.name}</th>
+                                <th>
+                                    <a class="a-exitillness" index="${illness.id}" href="javaScript:;">修改</a>
+                                    <a class="a-delillness" index="${illness.id}" href="javaScript:;">删除</a>
+                                </th>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-
         </div>
-
     </div>
 </div>
+<%--修改疾病及科室弹框--%>
+<div class="modal hide fade" id="newDepartment_Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus"></i> 编辑疾病</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/set/illnessadd" id="form-exitdepartment" method="post">
+                    <input type="hidden" id="input-id" name="illness.id">
+                    <div class="form-group">
+                        <label>疾病名称</label>
+                        <input id="input-name" type="text" class="form-control" name="illness.name"
+                               placeholder="疾病名称">
+                    </div>
+                    <div class="form-group">
+                        <select name="id" id="kss">
+                            <option value=""></option>
+                            <c:forEach items="${departmentList}" var="department">
+                                <option value="${department.id}">${department.name}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btn-save-illness" type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <script src="http://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.staticfile.org/twitter-bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="http://cdn.staticfile.org/select2/3.4.8/select2.min.js"></script>
+<script src="/statics/js/jquery.validate.js"></script>
 <script>
     $(function () {
+
+        //删除记录
+        $(".a-delillness").click(function () {
+            var id = $(this).attr("index");
+            if (confirm("确定要删除吗？")) {
+                window.location.href = "/set/illnessdel?id=" + id;
+            }
+        });
+
         $("#ks").select2({
             placeholder: "请选择科室",
             width: '200px'
         });
-    });
-</script>
 
+        $("#kss").select2({
+            placeholder: "请选择科室",
+            width: '200px'
+        });
+
+
+        $(".a-exitillness").click(function () {
+            var id = $(this).attr("index");
+            $.ajax({
+                url: "/set/illnessjson?id=" + id,
+                type: "post",
+                success: function (json) {
+                    if (json.status == "error") {
+                        alert("服务器异常,请稍后再试!");
+                    } else {
+                        $("#newDepartment_Modal").modal("show");
+
+                        $("#input-id").val(json.id);
+                        $("#input-name").val(json.name);
+                    }
+                },
+                error: function () {
+                    alert("服务器异常,请稍后再试!")
+                }
+            });
+        });
+
+
+        $("#form-exitdepartment").validate({
+            errorElement:"span",
+            errorClass:"text-error",
+            rules:{
+                "illness.name":{
+                    required:true
+                },
+                id:{
+                    min:1
+                }
+            },
+            messages:{
+                "illness.name":{
+                    required:"请输入疾病名称"
+                },
+                "id":{
+                    min:"请选择所属科室"
+                }
+            }
+        })
+
+        $("#btn-save-illness").click(function () {
+            $("#form-exitdepartment").submit();
+        })
+
+    });
+
+
+</script>
 
 </body>
 </html>

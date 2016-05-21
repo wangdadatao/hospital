@@ -45,8 +45,8 @@
                                 <th>${department.name}</th>
                                 <th>${department.admin}</th>
                                 <th>
-                                    <a class="a-deldepartment" index="${department.id}" href="javascript:;">删除</a>
                                     <a class="a-editdepartment" index="${department.id}" href="javascript:;">修改</a>
+                                    <a class="a-deldepartment" index="${department.id}" href="javascript:;">删除</a>
                                 </th>
                             </tr>
                         </c:forEach>
@@ -124,36 +124,33 @@
                     alert("服务器异常,请稍后再试!")
                 }
             });
+        });
 
-//            表单验证
-            $("#form-exitdepartment").validate({
-                errorElement: "span",
-                errorClass: "text-error",
-                rules: {
-                    "department.name": {
-                        required: true
-                    },
-                    "department.admin": {
-                        required: true
-                    }
+        //单验证
+        $("#form-exitdepartment").validate({
+            errorElement: "span",
+            errorClass: "text-error",
+            rules: {
+                "department.name": {
+                    required: true
                 },
-                messages: {
-                    "department.name": {
-                        required: "请输入科室名"
-                    },
-                    "department.admin": {
-                        required: "请输入负责人姓名"
-                    }
+                "department.admin": {
+                    required: true
                 }
-            });
+            },
+            messages: {
+                "department.name": {
+                    required: "请输入科室名"
+                },
+                "department.admin": {
+                    required: "请输入负责人姓名"
+                }
+            }
+        });
 
-            $("#btn-save-department").click(function () {
-                $("#form-exitdepartment").submit();
-            });
-
-
-        })
-
+        $("#btn-save-department").click(function () {
+            $("#form-exitdepartment").submit();
+        });
 
     })
 

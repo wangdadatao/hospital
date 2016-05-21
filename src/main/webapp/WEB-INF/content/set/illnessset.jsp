@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,17 +34,18 @@
             </span>
                 </div>
                 <div class="box-body form">
-                    <form action="">
+                    <form id="form-addillness" action="/set/illnessadd" method="post">
                         <label>疾病名称</label>
-                        <input type="text">
+                        <input name="illness.name" type="text">
                         <label>所属科室</label>
-                        <select id="ks">
-                            <option value=""></option>
-                            <option value="">内科</option>
-                            <option value="">外科</option>
+                        <select name="id" id="ks">
+                            <option value="0"></option>
+                            <c:forEach items="${departmentList}" var="department">
+                                <option value="${department.id}">${department.name}</option>
+                            </c:forEach>
                         </select>
                         <div class="form-actions">
-                            <button class="button button-flat-action button-pill">保存</button>
+                            <button id="btn-submmit" type="button" class="button button-flat-action button-pill">保存</button>
                         </div>
                     </form>
                 </div>
@@ -58,12 +59,39 @@
 <script src="http://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.staticfile.org/twitter-bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="http://cdn.staticfile.org/select2/3.4.8/select2.min.js"></script>
+<script src="/statics/js/jquery.validate.js"></script>
 <script>
     $(function () {
         $("#ks").select2({
             placeholder: "请选择科室",
             width: '220px'
         });
+
+        $("#form-addillness").validate({
+            errorElement:"span",
+            errorClass:"text-error",
+            rules:{
+                "illness.name":{
+                    required:true
+                },
+                "id":{
+                    min:1
+                }
+            },
+            messages:{
+                "illness.name":{
+                    required:"请输入疾病名字"
+                },
+                "id":{
+                    min:"请选择科室"
+                }
+            }
+        });
+
+        $("#btn-submmit").click(function () {
+            $("#form-addillness").submit()
+        })
+
     });
 </script>
 
