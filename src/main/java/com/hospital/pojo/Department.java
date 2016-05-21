@@ -1,13 +1,18 @@
 package com.hospital.pojo;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Created by 海涛 on 2016/5/20.
  */
+@Entity
+@Table(name = "t_department")
 public class Department implements Serializable {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String name;
     private String admin;
 

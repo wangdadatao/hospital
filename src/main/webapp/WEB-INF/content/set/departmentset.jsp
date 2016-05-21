@@ -35,19 +35,18 @@
             </span>
                 </div>
                 <div class="box-body form">
-                    <form action="/set/departmentadd">
+                    <form id="form-adddepartment" action="/set/departmentadd" method="post">
                         <label>科室名称</label>
-                        <input type="text">
+                        <input type="text" name="department.name">
                         <label>负责人</label>
-                        <input type="text">
+                        <input type="text" name="department.admin">
                         <div class="form-actions">
-                            <button class="button button-flat-action button-pill">保存</button>
+                            <button id="btn-submint" type="button" class="button button-flat-action button-pill">保存
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-
-
         </div>
 
     </div>
@@ -57,12 +56,40 @@
 <script src="http://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.staticfile.org/twitter-bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="http://cdn.staticfile.org/select2/3.4.8/select2.min.js"></script>
+<script src="/statics/js/jquery.validate.js"></script>
 <script>
     $(function () {
         $("#ks").select2({
             placeholder: "请选择科室",
             width: '220px'
         });
+
+        $("#form-adddepartment").validate({
+            errorElement: "span",
+            errorClass: "text-error",
+            rules: {
+                "department.name": {
+                    required: true
+                },
+                "department.admin": {
+                    required: true
+                }
+            },
+            messages: {
+                "department.name": {
+                    required: "请输入科室名"
+                },
+                "department.admin": {
+                    required: "请输入负责人姓名"
+                }
+            }
+        })
+
+        $("#btn-submint").click(function () {
+            $("#form-adddepartment").submit();
+        })
+
+
     });
 </script>
 

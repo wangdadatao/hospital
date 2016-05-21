@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<%@include file="../../public/public.jsp"%>
+<%@include file="../../public/public.jsp" %>
 
 <div class="container-fluid">
     <div class="row-fluid">
@@ -41,14 +41,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th>内科</th>
-                            <th>张晓明</th>
-                            <th>
-                                <a href="">修改</a>
-                                <a href="#">删除</a>
-                            </th>
-                        </tr>
+                        <c:forEach items="${departmentList}" var="department">
+                            <tr>
+                                <th>${department.name}</th>
+                                <th>${department.admin}</th>
+                                <th>
+                                    <a id="a-editdepartment" index="${department.id}" href="javascript:;">修改</a>
+                                    <a id="a-deldepartment" href="javascript:;" index="${department.id}">删除</a>
+                                </th>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -60,10 +62,101 @@
     </div>
 </div>
 
+<div class="modal fade" id="newCustomer_Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus"></i> 编辑用户</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/set/departmentadd" id="form-exitdepartment" method="post">
+                    <input type="hidden" id="input-id" name="department.id">
+                    <div class="form-group">
+                        <label>客户名称</label>
+                        <input id="input-name" type="text" class="form-control" name="department.name" placeholder="客户名称">
+                    </div>
+                    <div class="form-group">
+                        <label>联系人</label>
+                        <input id="input-admin" type="text" class="form-control" name="department.admin" placeholder="联系人姓名">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btn-save-department" type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <script src="http://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.staticfile.org/twitter-bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="/statics/js/jquery.validate.js"></script>
+<script>
+    $(function () {
 
+        $("#a-editdepartment").click(function () {
+            var id = $(this).attr("index");
+            $.ajax({
+                url: "/set/departmentjson?id=" + id,
+                type: "post",
+                success: function (json) {
+                    if (json.status == "error") {
+                        alert("服务器异常,请稍后再试!");
+                    } else {
+                        $("#newCustomer_Modal").modal("show");
+                        $("#input-id").val(json.id);
+                        $("#input-name").val(json.name);
+                        $("#input-admin").val(json.admin);
+                    }
+                },
+                error: function () {
+                    alert("服务器异常,请稍后再试!")
+                }
+            });
+
+            $("#form-exitdepartment").validate({
+                errorElement:"span",
+                errorClass:"text-error",
+                rules:{
+                    "department.name":{
+                        required:true
+                    },
+                    "department.admin":{
+                        required:true
+                    }
+                },
+                messages:{
+                    "department.name":{
+                        required:"请输入科室名"
+                    },
+                    "department.admin":{
+                        required:"请输入负责人姓名"
+                    }
+                }
+            })
+
+            $("#btn-save-department").click(function () {
+                $("#form-exitdepartment").submit();
+            })
+
+            $("#a-deldepartment").click(function () {
+                var id = $(this).attr("index");
+                if(confirm("确定要删除吗？")){
+                    window.location.href = "/set/departmentdel?id=" + id;
+                }
+            })
+
+        })
+
+
+    })
+
+
+</script>
 </body>
 </html>

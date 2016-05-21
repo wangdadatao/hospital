@@ -1,5 +1,6 @@
 package com.hospital.dao;
 
+import com.google.gson.Gson;
 import com.hospital.util.Page;
 import com.hospital.util.SearchFilter;
 import org.hibernate.Criteria;
@@ -18,7 +19,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-public abstract class BaseDAO<T,PK extends Serializable> {
+public abstract class BaseDAO<T, PK extends Serializable> {
 
     @Inject
     private SessionFactory sessionFactory;
@@ -33,15 +34,14 @@ public abstract class BaseDAO<T,PK extends Serializable> {
         return sessionFactory.getCurrentSession();
     }
 
-    public void save(T entity) {
-        getSession().saveOrUpdate(entity);
+    public void save(T t) {
+        System.out.println(new Gson().toJson(t));
+        getSession().saveOrUpdate(t);
     }
 
     public T findById(PK id) {
-        return (T) getSession().get(clazz,id);
+        return (T) getSession().get(clazz, id);
     }
-
-
 
 
     public void del(PK id) {
@@ -57,7 +57,7 @@ public abstract class BaseDAO<T,PK extends Serializable> {
         return criteria.list();
     }
 
-    public List<T> findByPage(Integer start,Integer end) {
+    public List<T> findByPage(Integer start, Integer end) {
         Criteria criteria = getSession().createCriteria(clazz);
         criteria.setFirstResult(start);
         criteria.setMaxResults(end);
@@ -66,8 +66,8 @@ public abstract class BaseDAO<T,PK extends Serializable> {
 
     public Page<T> findPage(Integer pageNo, Integer pageSize) {
         int count = count().intValue();
-        Page<T> page = new Page<T>(pageNo.toString(),count,pageSize);
-        page.setItems(findByPage(page.getStart(),page.getSize()));
+        Page<T> page = new Page<T>(pageNo.toString(), count, pageSize);
+        page.setItems(findByPage(page.getStart(), page.getSize()));
         return page;
     }
 
@@ -77,12 +77,12 @@ public abstract class BaseDAO<T,PK extends Serializable> {
         return criteria.list();
     }
 
-    public Page<T> findPage(Integer pageNo,Integer pageSize,List<SearchFilter> searchFilters) {
+    public Page<T> findPage(Integer pageNo, Integer pageSize, List<SearchFilter> searchFilters) {
         Criteria criteria = getCriteriaBySearchFilter(searchFilters);
 
         int count = countUseCriteria(criteria).intValue();
 
-        Page<T> page = new Page<T>(pageNo.toString(),count,pageSize);
+        Page<T> page = new Page<T>(pageNo.toString(), count, pageSize);
         criteria.setFirstResult(page.getStart());
         criteria.setMaxResults(page.getSize());
         page.setItems(criteria.list());
@@ -103,48 +103,48 @@ public abstract class BaseDAO<T,PK extends Serializable> {
 
     private Criteria getCriteriaBySearchFilter(List<SearchFilter> searchFilters) {
         Criteria criteria = getSession().createCriteria(clazz);
-        for(SearchFilter searchFilter : searchFilters) {
+        for (SearchFilter searchFilter : searchFilters) {
             String propertyName = searchFilter.getPropertyName();
             String equalType = searchFilter.getEqualType();
             Object value = searchFilter.getValue();
-            if(propertyName.contains("_or_")) {
+            if (propertyName.contains("_or_")) {
                 String[] names = propertyName.split("_or_");
 
                 Disjunction disjunction = Restrictions.disjunction();
-                for(String name : names) {
-                    Criterion criterion = buildWhereCondition(name,equalType,value);
+                for (String name : names) {
+                    Criterion criterion = buildWhereCondition(name, equalType, value);
                     disjunction.add(criterion);
                 }
 
                 criteria.add(disjunction);
             } else {
-                criteria.add(buildWhereCondition(propertyName,equalType,value));
+                criteria.add(buildWhereCondition(propertyName, equalType, value));
             }
         }
         return criteria;
     }
 
     private Criterion buildWhereCondition(String propertyName, String equalType, Object value) {
-        if("eq".equalsIgnoreCase(equalType)) {
-            return Restrictions.eq(propertyName,value);
-        } else if("like".equalsIgnoreCase(equalType)) {
-            return Restrictions.like(propertyName,value.toString(), MatchMode.ANYWHERE);
-        } else if("gt".equals(equalType)) {
-            return Restrictions.gt(propertyName,value);
-        } else if("lt".equals(equalType)) {
-            return Restrictions.lt(propertyName,value);
-        } else if("ge".equals(equalType)) {
-            return Restrictions.ge(propertyName,value);
-        } else if("le".equals(equalType)) {
-            return Restrictions.le(propertyName,value);
+        if ("eq".equalsIgnoreCase(equalType)) {
+            return Restrictions.eq(propertyName, value);
+        } else if ("like".equalsIgnoreCase(equalType)) {
+            return Restrictions.like(propertyName, value.toString(), MatchMode.ANYWHERE);
+        } else if ("gt".equals(equalType)) {
+            return Restrictions.gt(propertyName, value);
+        } else if ("lt".equals(equalType)) {
+            return Restrictions.lt(propertyName, value);
+        } else if ("ge".equals(equalType)) {
+            return Restrictions.ge(propertyName, value);
+        } else if ("le".equals(equalType)) {
+            return Restrictions.le(propertyName, value);
         }
         return null;
     }
 
 
-    public List<T> findAllOrder(String orderPropertyName,String orderType) {
+    public List<T> findAllOrder(String orderPropertyName, String orderType) {
         Criteria criteria = getSession().createCriteria(clazz);
-        if("desc".equalsIgnoreCase(orderType)) {
+        if ("desc".equalsIgnoreCase(orderType)) {
             criteria.addOrder(Order.desc(orderPropertyName));
         } else {
             criteria.addOrder(Order.asc(orderPropertyName));
@@ -152,15 +152,15 @@ public abstract class BaseDAO<T,PK extends Serializable> {
         return criteria.list();
     }
 
-    public T findByProperty(String propertyName,Object value) {
+    public T findByProperty(String propertyName, Object value) {
         Criteria criteria = getSession().createCriteria(clazz);
-        criteria.add(Restrictions.eq(propertyName,value));
+        criteria.add(Restrictions.eq(propertyName, value));
         return (T) criteria.uniqueResult();
     }
 
-    public List<T> findListByProperty(String propertyName,Object value) {
+    public List<T> findListByProperty(String propertyName, Object value) {
         Criteria criteria = getSession().createCriteria(clazz);
-        criteria.add(Restrictions.eq(propertyName,value));
+        criteria.add(Restrictions.eq(propertyName, value));
         return criteria.list();
     }
 
