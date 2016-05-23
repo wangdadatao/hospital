@@ -3,8 +3,10 @@ package com.hospital.action;
 import com.google.gson.Gson;
 import com.hospital.pojo.Department;
 import com.hospital.pojo.Illness;
+import com.hospital.pojo.User;
 import com.hospital.service.DepartmentService;
 import com.hospital.service.IllnessService;
+import com.hospital.service.UserService;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
@@ -23,6 +25,8 @@ public class SetAllAction extends BaseAction {
     private DepartmentService departmentService;
     @Inject
     private IllnessService illnessService;
+    @Inject
+    private UserService userService;
 
     private List<Department> departmentList;
     private Department department;
@@ -30,6 +34,9 @@ public class SetAllAction extends BaseAction {
 
     private List<Illness> illnessList;
     private Illness illness;
+
+    private List<User> userList;
+    private User user;
 
     //展示部门
     @Action(value = "departmentlist")
@@ -104,10 +111,10 @@ public class SetAllAction extends BaseAction {
     }
 
     //删除某疾病
-    @Action(value = "illnessdel",results = {
-            @Result(type = "redirectAction",params = {"actiomName","illnestlist"})
+    @Action(value = "illnessdel", results = {
+            @Result(type = "redirectAction", params = {"actiomName", "illnestlist"})
     })
-    public String delIllness(){
+    public String delIllness() {
         illnessService.delIllness(id);
         return SUCCESS;
     }
@@ -136,6 +143,8 @@ public class SetAllAction extends BaseAction {
     // 展示用户
     @Action(value = "userlist")
     public String showUser() {
+        userList = userService.findAll();
+
         return SUCCESS;
     }
 
@@ -146,10 +155,31 @@ public class SetAllAction extends BaseAction {
     }
 
     //添加用户
-    @Action(value = "useradd")
+    @Action(value = "useradd",results = {
+            @Result(type = "redirectAction",params = {"actionName","userlist"})
+    })
     public String addUser() {
+        userService.addUser(user);
         return SUCCESS;
     }
+
+    @Action(value = "userdel",results = {
+            @Result(type = "redirectAction",params = {"actionName","userlist"})
+    })
+    public String delUser(){
+        userService.delUser(id);
+        return SUCCESS;
+    }
+
+    //获取User json
+    @Action(value = "userjson")
+    public String userJson() throws IOException {
+        user = userService.findById(id);
+        renderJSON(user);
+        return NONE;
+    }
+
+
 
 
     //SET  GET
@@ -195,5 +225,21 @@ public class SetAllAction extends BaseAction {
         this.illness = illness;
     }
 
-//
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    //
 }

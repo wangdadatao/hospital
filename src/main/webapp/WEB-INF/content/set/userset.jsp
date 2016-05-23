@@ -32,23 +32,23 @@
             </span>
                 </div>
                 <div class="box-body form">
-                    <form action="/set/useradd">
+                    <form id="form-adduser" action="/set/useradd" method="post">
                         <label>员工姓名</label>
-                        <input type="text" id="name">
+                        <input name="user.realname" type="text" id="name">
                         <label>账号 <span class="muted">(用于登录系统)</span></label>
-                        <input type="text" id="account">
+                        <input name="user.username" type="text" id="account" >
                         <label>密码 <span class="muted">(默认123456)</span></label>
-                        <input type="password" value="123456">
+                        <input name="user.password" type="password" value="123456">
                         <label>联系电话</label>
-                        <input type="text">
+                        <input name="user.tel" type="text" >
                         <label>请选择角色</label>
-                        <select name="" id="">
-                            <option value="">管理员</option>
-                            <option value="">普通员工</option>
+                        <select name="user.role">
+                            <option value="管理员">管理员</option>
+                            <option value="普通员工">普通员工</option>
                         </select>
 
                         <div class="form-actions">
-                            <button class="button button-flat-action button-pill">保存</button>
+                            <button id="btn-commit" type="button" class="button button-flat-action button-pill">保存</button>
                         </div>
                     </form>
                 </div>
@@ -61,7 +61,50 @@
 
 <script src="http://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.staticfile.org/twitter-bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="/statics/js/jquery.validate.js"></script>
+<script>
+    $(function () {
 
+        $("#form-adduser").validate({
+            errorElement:"span",
+            errorClass:"text-error",
+            rules:{
+                "user.realname":{
+                    required:true
+                },
+                "user.password":{
+                    required:true
+                },
+                "user.username":{
+                    required:true
+                },
+                "user.tel":{
+                    required:true
+                }
+            },
+            messages:{
+                "user.realname":{
+                    required:"请输入员工姓名"
+                },
+                "user.password":{
+                    required:"请输入员工密码"
+                },
+                "user.username":{
+                    required:"请输入登录账号"
+                },
+                "user.tel":{
+                    required:"请输入员工手机号"
+                }
+            }
+        })
+
+        $("#btn-commit").click(function () {
+            $("#form-adduser").submit();
+        })
+
+
+    })
+</script>
 
 </body>
 </html>

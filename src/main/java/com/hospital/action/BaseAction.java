@@ -39,4 +39,12 @@ public abstract class BaseAction extends ActionSupport{
         out.flush();
         out.close();
     }
+
+    public String getIp() {
+        String ip = getHttpRequest().getRemoteAddr();
+        if ("0:0:0:0:0:0:0:1".equals(ip)) {
+            ip = "127.0.0.1";
+        }
+        return ip;
+    }
 }

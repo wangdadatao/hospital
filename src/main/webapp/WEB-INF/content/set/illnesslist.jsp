@@ -90,7 +90,7 @@
                 <h4 class="modal-title"><i class="fa fa-plus"></i> 编辑疾病</h4>
             </div>
             <div class="modal-body">
-                <form action="/set/illnessadd" id="form-exitdepartment" method="post">
+                <form action="/set/illnessadd" id="form-editdepartment" method="post">
                     <input type="hidden" id="input-id" name="illness.id">
                     <div class="form-group">
                         <label>疾病名称</label>
@@ -165,7 +165,7 @@
         });
 
 
-        $("#form-exitdepartment").validate({
+        $("#form-editdepartment").validate({
             errorElement:"span",
             errorClass:"text-error",
             rules:{

@@ -10,7 +10,7 @@ import javax.inject.Named;
  * Created by 昊 on 2016/5/20.
  */
 @Named
-public class UserDAO extends BaseDAO<User, String> {
+public class UserDAO extends BaseDAO<User, Integer> {
 
     public User findByName(String name){
         Criteria criteria = getSession().createCriteria(User.class);

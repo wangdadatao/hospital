@@ -1,8 +1,16 @@
 package com.hospital.pojo;
 
+import javax.persistence.*;
 
+@Entity
+@Table(name = "t_user")
 public class User {
 
+    public static final String NORMAL = "正常";
+    public static final String PROHIBIT = "禁用";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String username;
     private String password;
@@ -11,6 +19,8 @@ public class User {
     private String role;
     private String ip;
     private String createtime;
+    private String logtime;
+    private String state;
 
     public Integer getId() {
         return id;
@@ -75,4 +85,21 @@ public class User {
     public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
+
+    public String getLogtime() {
+        return logtime;
+    }
+
+    public void setLogtime(String logtime) {
+        this.logtime = logtime;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
 }
